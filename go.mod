@@ -1,4 +1,4 @@
-module github.com/tomaspavlic/enumall
+module github.com/benjfield/enumall
 
 go 1.25.0
 
