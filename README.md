@@ -1,5 +1,5 @@
 # Enumall
-[![Go](https://github.com/tomaspavlic/enumall/actions/workflows/go.yml/badge.svg)](https://github.com/tomaspavlic/enumall/actions/workflows/go.yml)
+[![Go](https://github.com/benjfield/enumall/actions/workflows/go.yml/badge.svg)](https://github.com/benjfield/enumall/actions/workflows/go.yml)
 
 Enumall is a tool to automate the creation of all const values for given type (enum). 
 
@@ -8,7 +8,7 @@ Enumall is a tool to automate the creation of all const values for given type (e
 `enumall` is installable command line application.
 
 ```
-go install github.com/tomaspavlic/enumall
+go install github.com/benjfield/enumall
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ go install github.com/tomaspavlic/enumall
 Add Go's code generator comment to use `enumall`.
 
 ```golang
-//go:generate go run github.com/tomaspavlic/enumall@latest -type=Season
+//go:generate go run github.com/benjfield/enumall@latest -type=Season
 
 type Season uint8
 
