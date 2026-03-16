@@ -8,6 +8,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/davecgh/go-spew/spew"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -104,6 +105,7 @@ func main() {
 	}
 
 	pkg := loadPackage(args)
+	spew.Dump(pkg)
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
