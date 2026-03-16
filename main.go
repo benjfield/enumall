@@ -107,6 +107,7 @@ func main() {
 	pkg := loadPackage(args)
 	spew.Dump(pkg)
 	spew.Dump(pkg.Name)
+	spew.Dump(pkg.Syntax)
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
