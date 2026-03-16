@@ -104,9 +104,9 @@ func main() {
 	}
 
 	pkg := loadPackage(args)
-	if len(pkg.Syntax) == 0 {
-		log.Fatal("error: 0 files found for package")
-	}
+	// if len(pkg.Syntax) == 0 {
+	// 	log.Fatal("error: 0 files found for package")
+	// }
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
