@@ -106,6 +106,7 @@ func main() {
 
 	pkg := loadPackage(args)
 	spew.Dump(pkg)
+	spew.Dump(pkg.Name)
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
@@ -114,6 +115,7 @@ func main() {
 				TypeName:    lookupTypeName,
 			}
 			ast.Inspect(s, func(n ast.Node) bool { return inspect(n, gen) })
+			spew.Dump(gen)
 			gen.generate()
 		}
 	}
