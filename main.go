@@ -5,8 +5,6 @@ import (
 	"go/ast"
 	"go/token"
 	"log"
-	"os"
-	"path"
 	"strings"
 	"text/template"
 
@@ -23,7 +21,7 @@ func handleError(err error) {
 }
 
 // inspect traverses AST node and stores all const names of given type name.
-func inspect(node ast.Node, typeName string, names *[]string) bool {
+func inspect(node ast.Node, gen *generator) bool {
 	decl, ok := node.(*ast.GenDecl)
 	if !ok || decl.Tok != token.CONST {
 		return true
@@ -59,7 +57,7 @@ func inspect(node ast.Node, typeName string, names *[]string) bool {
 			}
 			typ = ident.Name
 		}
-		if typ != typeName {
+		if typ != gen.TypeName {
 			// This is not the type we're looking for.
 			continue
 		}
@@ -70,7 +68,7 @@ func inspect(node ast.Node, typeName string, names *[]string) bool {
 			}
 
 			// Add the value name to the list.
-			*names = append(*names, name.Name)
+			gen.Values = append(gen.Values, name.Name)
 		}
 	}
 
@@ -78,18 +76,13 @@ func inspect(node ast.Node, typeName string, names *[]string) bool {
 }
 
 // loadPackage loads the package from go:generate file.
-func loadPackage() *packages.Package {
-	fileName := os.Getenv("GOFILE")
-	wd, err := os.Getwd()
-	handleError(err)
-	path := path.Join(wd, fileName)
-
+func loadPackage(patterns []string) *packages.Package {
 	cfg := &packages.Config{
 		Mode:  packages.NeedSyntax | packages.NeedName,
 		Tests: false,
 	}
 
-	pkgs, err := packages.Load(cfg, path)
+	pkgs, err := packages.Load(cfg, patterns...)
 	handleError(err)
 	if len(pkgs) != 1 {
 		log.Fatalf("error: %d packages found", len(pkgs))
@@ -104,15 +97,21 @@ func main() {
 	log.SetPrefix("enumall: ")
 	types := strings.Split(*typeNames, ",")
 
-	pkg := loadPackage()
+	args := flag.Args()
+	if len(args) == 0 {
+		// Default: process whole package in current directory.
+		args = []string{"."}
+	}
+
+	pkg := loadPackage(args)
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
-			gen := generator{
+			gen := &generator{
 				PackageName: pkg.Name,
 				TypeName:    lookupTypeName,
 			}
-			ast.Inspect(s, func(n ast.Node) bool { return inspect(n, lookupTypeName, &gen.Values) })
+			ast.Inspect(s, func(n ast.Node) bool { return inspect(n, gen) })
 			gen.generate()
 		}
 	}
