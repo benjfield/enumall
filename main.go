@@ -79,7 +79,7 @@ func inspect(node ast.Node, gen *generator) bool {
 // loadPackage loads the package from go:generate file.
 func loadPackage(patterns []string) *packages.Package {
 	cfg := &packages.Config{
-		Mode:  packages.NeedSyntax | packages.NeedName,
+		Mode:  packages.NeedName | packages.NeedTypes | packages.NeedTypesInfo | packages.NeedSyntax | packages.NeedFiles,
 		Tests: false,
 	}
 
