@@ -8,7 +8,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/davecgh/go-spew/spew"
 	"golang.org/x/tools/go/packages"
 )
 
@@ -105,9 +104,9 @@ func main() {
 	}
 
 	pkg := loadPackage(args)
-	spew.Dump(pkg)
-	spew.Dump(pkg.Name)
-	spew.Dump(pkg.Syntax)
+	if len(pkg.Syntax) == 0 {
+		log.Fatal("error: 0 files found for package")
+	}
 
 	for _, s := range pkg.Syntax {
 		for _, lookupTypeName := range types {
@@ -116,7 +115,9 @@ func main() {
 				TypeName:    lookupTypeName,
 			}
 			ast.Inspect(s, func(n ast.Node) bool { return inspect(n, gen) })
-			spew.Dump(gen)
+			if len(gen.Values) == 0 {
+				log.Fatal("error: 0 values found for topic")
+			}
 			gen.generate()
 		}
 	}
